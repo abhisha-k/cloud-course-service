@@ -20,7 +20,7 @@ phases:
     commands:
       - docker push $ECR_REPO:$IMAGE_TAG
       - docker push $ECR_REPO:latest
-      - printf '[{"name":"abhisha-course","imageUri":"%s"}]' $ECR_REPO:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"app-course-abhisha","imageUri":"%s"}]' $ECR_REPO:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
   files:

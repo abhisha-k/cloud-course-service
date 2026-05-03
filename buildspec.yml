@@ -8,12 +8,12 @@ env:
 phases:
   pre_build:
     commands:
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin <account>.dkr.ecr.$AWS_REGION.amazonaws.com
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 991524241826.dkr.ecr.$AWS_REGION.amazonaws.com
       - export IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c1-7)
 
   build:
     commands:
-      - cd day2-microservices/course-service
+      - cd day2-microservices/abhisha-course
       - docker build -t $ECR_REPO:$IMAGE_TAG .
       - docker tag $ECR_REPO:$IMAGE_TAG $ECR_REPO:latest
 
@@ -21,7 +21,7 @@ phases:
     commands:
       - docker push $ECR_REPO:$IMAGE_TAG
       - docker push $ECR_REPO:latest
-      - printf '[{"name":"course-service","imageUri":"%s"}]' $ECR_REPO:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"abhisha-course","imageUri":"%s"}]' $ECR_REPO:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
   files:

@@ -17,9 +17,9 @@ def health():
     return jsonify({"status": "ok", "service": "course-service"}), 200
 
 
-@app.route("/courses/<course_code>", methods=["GET"])
-def get_course(course_code):
-    resp = courses_table.get_item(Key={"id": course_code})
+@app.route("/courses/<course_id>", methods=["GET"])
+def get_course(course_id):
+    resp = courses_table.get_item(Key={"id": course_id})
     item = resp.get("Item")
 
     if not item:
@@ -34,21 +34,19 @@ def list_courses():
     return jsonify(resp.get("Items", [])), 200
 
 
-@app.route("/", methods=["POST"])
+@app.route("/courses", methods=["POST"])
 def add_course():
     try:
         data = request.get_json()
 
         # Basic validation
-        if not data or "code" not in data or "name" not in data:
-            return jsonify({"error": "Missing required fields: code, name"}), 400
-
-        course_code = data["code"]
+        if not data or "id" not in data or "name" not in data:
+            return jsonify({"error": "Missing required fields: id, name"}), 400
 
         # Prevent overwrite if course already exists
         courses_table.put_item(
             Item=data,
-            ConditionExpression="attribute_not_exists(code)"
+            ConditionExpression="attribute_not_exists(id)"
         )
 
         return jsonify({"message": "Course added successfully"}), 201
@@ -62,7 +60,12 @@ def add_course():
         return jsonify({"error": str(e)}), 500
 
 
+# Alias route for ingress `/`
+@app.route("/", methods=["POST"])
+def add_course_root():
+    return add_course()
+
+
 if __name__ == "__main__":
-    # Note: your Kubernetes YAML exposes containerPort: 3001
-    # so we should run Flask on port 3001 to match
+    # Match Kubernetes containerPort
     app.run(host="0.0.0.0", port=3001, debug=False)

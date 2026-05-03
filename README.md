@@ -2,7 +2,9 @@
 when code is updated we need to run these:
 
 docker build -t abhisha-course .
+
 docker tag abhisha-course:latest 991524241826.dkr.ecr.ap-south-2.amazonaws.com/abhisha-course:latest
+
 docker push 991524241826.dkr.ecr.ap-south-2.amazonaws.com/abhisha-course:latest
 
 kubectl rollout restart deployment deployment-course-abhisha -n cloudstudents
